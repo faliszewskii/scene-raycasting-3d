@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "3DSceneRaycasting", "3DSceneRaycasting.csproj", "{06768788-278B-4DBD-9AE0-553C262CD9F9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "scene-raycasting-3D", "scene-raycasting-3D.csproj", "{6E32F24D-2658-4F4F-AC60-591E9032CEF9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{06768788-278B-4DBD-9AE0-553C262CD9F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{06768788-278B-4DBD-9AE0-553C262CD9F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{06768788-278B-4DBD-9AE0-553C262CD9F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{06768788-278B-4DBD-9AE0-553C262CD9F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E32F24D-2658-4F4F-AC60-591E9032CEF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E32F24D-2658-4F4F-AC60-591E9032CEF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E32F24D-2658-4F4F-AC60-591E9032CEF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E32F24D-2658-4F4F-AC60-591E9032CEF9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {C2C82AA5-7545-49BE-8B44-D0E608897B06}
+		SolutionGuid = {EC7954B0-04A0-4BD2-A346-24F7DFB4210C}
 	EndGlobalSection
 EndGlobal
