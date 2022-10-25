@@ -2,14 +2,14 @@
 {
     internal class Scene
     {
-        DirectBitmap bitmap;
+        private readonly DirectBitmap _bitmap;
         public Scene(DirectBitmap bitmap)
         { 
-            this.bitmap = bitmap;
+            this._bitmap = bitmap;
         }
-        public void refresh()
+        public void Refresh()
         {
-            bitmap.SetPixel(100,100, Color.White);
+            _bitmap.SetPixel(100,100, Color.White);
         }
     }
 }

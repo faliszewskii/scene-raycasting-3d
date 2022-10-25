@@ -7,7 +7,7 @@ namespace scene_raycasting_3D
         {
             InitializeComponent();
             scene = InitializeScene();
-            scene.refresh();
+            scene.Refresh();
         }
 
         private Scene InitializeScene()
