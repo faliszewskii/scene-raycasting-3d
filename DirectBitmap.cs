@@ -9,8 +9,8 @@ namespace scene_raycasting_3D
         public Bitmap Bitmap { get; private set; }
         private int[] Bits { get; set; }
         private bool Disposed { get; set; }
-        private int Height { get; set; }
-        private int Width { get; set; }
+        public int Height { get; set; }
+        public int Width { get; set; }
 
         private GCHandle BitsHandle { get; set; }
 
@@ -25,15 +25,19 @@ namespace scene_raycasting_3D
 
         public void SetPixel(int x, int y, Color colour)
         {
-            int index = x + (y * Width);
+            int index = x + y * Width;
             int col = colour.ToArgb();
 
             Bits[index] = col;
         }
+        public void SetPixel(float xf, float yf, Color colour)
+        {
+            SetPixel((int)xf, (int)yf, colour);
+        }
 
         public Color GetPixel(int x, int y)
         {
-            int index = x + (y * Width);
+            int index = x + y * Width;
             int col = Bits[index];
             Color result = Color.FromArgb(col);
 
@@ -46,6 +50,16 @@ namespace scene_raycasting_3D
             Disposed = true;
             Bitmap.Dispose();
             BitsHandle.Free();
+        }
+
+        public bool VectorInBound(int x, int y)
+        {
+            return x >= 0 && y >= 0 && x < Width && y < Height;
+        }
+
+        public bool VectorInBound(float x, float y)
+        {
+            return VectorInBound((int)x, (int)y);
         }
     }
 }

@@ -1,44 +1,30 @@
-using System.Collections.Immutable;
-using scene_raycasting_3D.geometry;
-using scene_raycasting_3D.model;
-
 namespace scene_raycasting_3D
 {
-    partial class SceneRaycasting3D : Form
+    internal partial class SceneRaycasting3D : Form
     {
-        private readonly Scene _scene;
+        private readonly View _view;
         public SceneRaycasting3D()
         {
-            InitializeComponent();
-            _scene = InitializeScene();
-            _scene.Refresh();
+
+            _view = new View();
+            InitializeComponent(_view);
+            InitializeView();
         }
 
-        
-        private Scene InitializeMockScene(DirectBitmap directBitmap)
+        private void InitializeView()
         {
-            var mockData = new List<Polygon>
+            var directBitmap = new DirectBitmap(viewPictureBox.Width, viewPictureBox.Height);
+            viewPictureBox.Image = directBitmap.Bitmap;
+            _view.Bitmap = directBitmap;
+        }
+
+        private void loadSceneToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                new(ImmutableList<Vertex>.Empty.AddRange(new List<Vertex>
-                {
-                    new(50, 50),
-                    new(200, 50),
-                    new(300, 150),
-                    new(300, 300)
-                }))
-            };
-            
-            var data = new Data { Polygons = mockData };
-            var scene = new Scene(directBitmap) { Data = data };
-            return scene;
-        }
-
-        private Scene InitializeScene()
-        {
-            var directBitmap = new DirectBitmap(pictureBox.Width, pictureBox.Height);
-            pictureBox.Image = directBitmap.Bitmap;
-
-            return InitializeMockScene(directBitmap);
+                _view.LoadScene(openFileDialog.FileName);
+            }
+            viewPictureBox.Refresh();
         }
     }
 
