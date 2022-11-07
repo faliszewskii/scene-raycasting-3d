@@ -11,14 +11,13 @@ public static class PolygonFillAlgorithm
     {
         if (polygon.Vertices.Count < 3) return;
         var vertices = polygon.Vertices;
-        //if (CrossProduct2D(vertices[1] - vertices[0], vertices[2] - vertices[1]) < 0)
-        //if( polygon.Vertices[0].Y > 0)
-        //    return;
-        var normals = polygon.Normals;
-        var colors = new List<Color>();
-        ForRange(0, vertices.Count, i =>
-            colors.Add(DeriveVertexColor(vertices[i], normals[i], theSun, camera, color))
-        );
+        
+        var vertexNormalMap = polygon.Vertices.Zip(polygon.Normals, (v, n) => new { v, n })
+            .ToDictionary(x => x.v, x => x.n);
+
+        var colors = vertexNormalMap.Select(pair => 
+            DeriveVertexColor(pair.Key, pair.Value, theSun, camera, color)
+        ).ToList();
 
         var sortedVertexIndices = Enumerable.Range(0, vertices.Count).ToList();
         sortedVertexIndices.Sort((i,j) => vertices[i].Y.CompareTo(vertices[j].Y));
@@ -61,7 +60,8 @@ public static class PolygonFillAlgorithm
                 for(int j = (int)aetList[i].X; j < (int)aetList.GetModInd(i+1).X; j++)
                     if (bitmap.VectorInBound(j + offset.X, yCurrent + offset.Y))
                     {
-                        var col = DeriveColorInPolygon(vertices, new Vector2D(j, yCurrent), colors);
+                        //var col = DeriveColorInPolygon(vertices, new Vector2D(j, yCurrent), colors);
+                        var col = DeriveNormalAndColorInTriangle(vertexNormalMap, vertices, new Vector2D(j,yCurrent), theSun, camera, color);
                         bitmap.SetPixel(j+offset.X,yCurrent+offset.Y, col);
                     }
                         
@@ -101,7 +101,7 @@ public static class PolygonFillAlgorithm
 
     private static float CrossProduct(Vector3D v1, Vector3D v2) => v1.X * v2.X + v1.Y * v2.Y + v1.Z * v2.Z;
 
-    private static Color DeriveColorInPolygon(List<Vector3D> vertices, Vector2D point, List<Color> vertexColors)
+    private static Color DeriveColorInTriangle(List<Vector3D> vertices, Vector2D point, List<Color> vertexColors)
     {
         var v1 = vertices[0];
         var v2 = vertices[1];
@@ -114,7 +114,6 @@ public static class PolygonFillAlgorithm
         var weights = new List<float>{w1, w2, w3};
         return ColorMean(vertexColors, weights);
     }
-    
 
     private static Color ColorMean(List<Color> colors, List<float> weights)
     {
@@ -128,5 +127,46 @@ public static class PolygonFillAlgorithm
         });
         
         return Color.FromArgb((int)mean.X, (int)mean.Y, (int)mean.Z);
+    }
+
+    private static Color DeriveNormalAndColorInTriangle(Dictionary<Vector3D,Vector3D> verticeNormals, List<Vector3D> vertices, Vector2D point, Vector3D theSun, Vector3D camera, Color objectColor)
+    {
+        
+        var v1 = vertices[0];
+        var v2 = vertices[1];
+        var v3 = vertices[2];
+        float w1 = ((v2.Y - v3.Y) * (point.X - v3.X) + (v3.X - v2.X) * (point.Y - v3.Y)) /
+                   ((v2.Y - v3.Y) * (v1.X - v3.X) + (v3.X - v2.X) * (v1.Y - v3.Y));
+        float w2 = ((v3.Y - v1.Y) * (point.X - v3.X) + (v1.X - v3.X) * (point.Y - v3.Y)) /
+                   ((v2.Y - v3.Y) * (v1.X - v3.X) + (v3.X - v2.X) * (v1.Y - v3.Y));
+        float w3 = 1 - w1 - w2;
+        var weights = new List<float>{w1, w2, w3};
+        var normal = VectorMean(verticeNormals.Select(p => p.Value).ToList(), weights);
+        var height = FloatMean(verticeNormals.Keys.Select(v => v.Z).ToList(), weights);
+        return DeriveVertexColor(new Vector3D(point, height), normal, theSun, camera, objectColor);
+    }
+
+    private static Vector3D VectorMean(List<Vector3D> vector, List<float> weights)
+    {
+        var mean = new Vector3D();
+        ForRange(0, vector.Count, i =>
+        {
+            float w = weights[i];
+            mean.X += vector[i].X * w;
+            mean.Y += vector[i].Y * w;
+            mean.Z += vector[i].Z * w;
+        });
+
+        return mean;
+    }
+
+    private static float FloatMean(List<float> nums, List<float> weights)
+    {
+        using var w = weights.GetEnumerator();
+        return nums.Aggregate(0f, (prev, cur) =>
+        {
+            w.MoveNext();
+            return prev + cur * w.Current;
+        });
     }
 }
