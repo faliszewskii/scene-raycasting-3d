@@ -7,19 +7,21 @@ namespace scene_raycasting_3D
     internal class View
     {
         public DirectBitmap Bitmap { get; set; }
+        public PolygonFiller polygonFiller;
         private Scene _scene;
         private List<Polygon> _polygons;
         
         private Vector2D _offset;
-        private Vector3D _theSun;
+        public Vector3D theSun;
         private Vector3D _camera;
 
         public View()
         {
             Bitmap = new DirectBitmap(1,1);
             _scene = new Scene();
-            _theSun = new Vector3D(0,1000,0);
-            _camera = new Vector3D(0,1000,0);
+            theSun = new Vector3D(0,0,1000);
+            _camera = new Vector3D(0,0,1000);
+            polygonFiller = new PolygonFiller();
         }
         
         public void LoadScene(String fileName)
@@ -29,8 +31,8 @@ namespace scene_raycasting_3D
             var vertices = _scene.Meshes.SelectMany(m => m.Vertices).ToList();
             float xMin = vertices.Min(v => v.X);
             float xMax = vertices.Max(v => v.X);
-            float yMin = vertices.Min(v => v.Z);
-            float yMax = vertices.Max(v => v.Z);
+            float yMin = vertices.Min(v => v.Y);
+            float yMax = vertices.Max(v => v.Y);
             float xLength = xMax - xMin;
             float yLength = yMax - yMin;
             float objLength = xLength > yLength ? xLength : yLength;
@@ -42,8 +44,8 @@ namespace scene_raycasting_3D
                     new Polygon(
                         face.Indices.Select(i => new Vector3D(
                             mesh.Vertices[i].X * Bitmap.Height / objLength,
-                            mesh.Vertices[i].Z * Bitmap.Height / objLength,
-                            mesh.Vertices[i].Y * Bitmap.Height / objLength
+                            mesh.Vertices[i].Y * Bitmap.Height / objLength,
+                            mesh.Vertices[i].Z * Bitmap.Height / objLength
                             )).ToList(),
                         face.Indices.Select(i => mesh.Normals[i]).ToList()
                         )
@@ -61,11 +63,11 @@ namespace scene_raycasting_3D
                 )
             );
             ForRange(0, _polygons.Count, i =>
-                PolygonFillAlgorithm.Fill(_polygons[i], _theSun, _camera, Bitmap, Color.White, _offset)
+                polygonFiller.Fill(_polygons[i], theSun, _camera, Bitmap, Color.White, _offset)
             );
             
-            float sunX = Math.Max(0, Math.Min(_theSun.X + _offset.X, Bitmap.Width-1)); 
-            float sunY = Math.Max(0, Math.Min(_theSun.Z + _offset.Y, Bitmap.Height-1));
+            float sunX = Math.Max(0, Math.Min(theSun.X + _offset.X, Bitmap.Width-1)); 
+            float sunY = Math.Max(0, Math.Min(theSun.Y + _offset.Y, Bitmap.Height-1));
             Bitmap.SetPixel(sunX, sunY, Color.Yellow);
         }
 
@@ -77,8 +79,8 @@ namespace scene_raycasting_3D
 
         public void MoveTheSun(Vector2D moveVector)
         {
-            _theSun.X += moveVector.X;
-            _theSun.Z += moveVector.Y;
+            theSun.X += moveVector.X;
+            theSun.Y += moveVector.Y;
         }
     }
 }

@@ -29,6 +29,58 @@ namespace scene_raycasting_3D
             }
             viewPictureBox.Refresh();
         }
+
+        private void kdTrackBar_Scroll(object sender, EventArgs e)
+        {
+            _view.polygonFiller.Kd = (float)kdTrackBar.Value/100;
+            ksTrackBar.Value = 100 - kdTrackBar.Value;
+            _view.polygonFiller.Ks = 1 - _view.polygonFiller.Kd;
+            _view.Refresh();
+            viewPictureBox.Refresh();
+        }
+
+        private void ksTrackBar_Scroll(object sender, EventArgs e)
+        {
+            _view.polygonFiller.Ks = (float)ksTrackBar.Value/100;
+            kdTrackBar.Value = 100 - ksTrackBar.Value;
+            _view.polygonFiller.Kd = 1 - _view.polygonFiller.Ks;
+            _view.Refresh();
+            viewPictureBox.Refresh();
+        }
+
+        private void mTrackBar_Scroll(object sender, EventArgs e)
+        {
+            _view.polygonFiller.M = mTrackBar.Value;
+            _view.Refresh();
+            viewPictureBox.Refresh();
+        }
+
+        private void sunZTrackBar_Scroll(object sender, EventArgs e)
+        {
+            _view.theSun = new Vector3D(_view.theSun.X, _view.theSun.Y, sunZTrackBar.Value);
+            _view.Refresh();
+            viewPictureBox.Refresh();
+        }
+
+        private void colorPickButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void modifyNormalCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void colorInterpolationRB_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void normalInterpolationRB_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 
     
