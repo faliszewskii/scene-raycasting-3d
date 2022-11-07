@@ -11,11 +11,13 @@ public class PolygonFiller
     public float Ks { get; set; }
     public float M { get; set; }
 
+    public bool NormalInterpolation { get; set; }
     public PolygonFiller()
     {
         Kd = 0.5f;
         Ks = 0.5f;
         M = 50;
+        NormalInterpolation = false;
     }
 
     public void Fill(Polygon polygon, Vector3D theSun, Vector3D camera, DirectBitmap bitmap, Color color, Vector2D offset)
@@ -71,8 +73,10 @@ public class PolygonFiller
                 for(int j = (int)aetList[i].X; j < (int)aetList.GetModInd(i+1).X; j++)
                     if (bitmap.VectorInBound(j + offset.X, yCurrent + offset.Y))
                     {
-                        var col = DeriveColorInTriangle(vertices, new Vector2D(j, yCurrent), colors);
-                        //var col = DeriveNormalAndColorInTriangle(vertexNormalMap, vertices, new Vector2D(j,yCurrent), theSun, camera, color);
+                        Color col;
+                        col = NormalInterpolation ? 
+                            DeriveNormalAndColorInTriangle(vertexNormalMap, vertices, new Vector2D(j,yCurrent), theSun, camera, color) : 
+                            DeriveColorInTriangle(vertices, new Vector2D(j, yCurrent), colors);
                         bitmap.SetPixel(j+offset.X,yCurrent+offset.Y, col);
                     }
                         

@@ -69,17 +69,19 @@ namespace scene_raycasting_3D
 
         private void modifyNormalCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-
+            
         }
 
         private void colorInterpolationRB_CheckedChanged(object sender, EventArgs e)
         {
-
+            
         }
 
         private void normalInterpolationRB_CheckedChanged(object sender, EventArgs e)
         {
-
+            _view.polygonFiller.NormalInterpolation = (sender as RadioButton).Checked;
+            _view.Refresh();
+            viewPictureBox.Refresh();
         }
     }
 
