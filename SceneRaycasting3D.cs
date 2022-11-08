@@ -64,7 +64,20 @@ namespace scene_raycasting_3D
 
         private void colorPickButton_Click(object sender, EventArgs e)
         {
-
+            if (colorDialog1.ShowDialog() == DialogResult.OK)
+            {
+                _view.polygonFiller.ObjectColor = colorDialog1.Color;
+                _view.Refresh();
+                viewPictureBox.Refresh();
+            }
+        }
+        private void normalPickButton_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                _view.LoadNormal(openFileDialog.FileName);
+            }
+            viewPictureBox.Refresh();
         }
 
         private void modifyNormalCheckBox_CheckedChanged(object sender, EventArgs e)

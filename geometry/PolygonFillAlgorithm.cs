@@ -10,6 +10,7 @@ public class PolygonFiller
     public float Kd { get; set; }
     public float Ks { get; set; }
     public float M { get; set; }
+    public Color ObjectColor { get; set; }
 
     public bool NormalInterpolation { get; set; }
     public PolygonFiller()
@@ -17,10 +18,11 @@ public class PolygonFiller
         Kd = 0.5f;
         Ks = 0.5f;
         M = 50;
+        ObjectColor = Color.White;
         NormalInterpolation = false;
     }
 
-    public void Fill(Polygon polygon, Vector3D theSun, Vector3D camera, DirectBitmap bitmap, Color color, Vector2D offset)
+    public void Fill(Polygon polygon, Vector3D theSun, Vector3D camera, DirectBitmap bitmap, Vector2D offset)
     {
         if (polygon.Vertices.Count < 3) return;
         var vertices = polygon.Vertices;
@@ -29,7 +31,7 @@ public class PolygonFiller
             .ToDictionary(x => x.v, x => x.n);
 
         var colors = vertexNormalMap.Select(pair => 
-            DeriveVertexColor(pair.Key, pair.Value, theSun, camera, color)
+            DeriveVertexColor(pair.Key, pair.Value, theSun, camera)
         ).ToList();
 
         var sortedVertexIndices = Enumerable.Range(0, vertices.Count).ToList();
@@ -75,7 +77,7 @@ public class PolygonFiller
                     {
                         Color col;
                         col = NormalInterpolation ? 
-                            DeriveNormalAndColorInTriangle(vertexNormalMap, vertices, new Vector2D(j,yCurrent), theSun, camera, color) : 
+                            DeriveNormalAndColorInTriangle(vertexNormalMap, vertices, new Vector2D(j,yCurrent), theSun, camera) : 
                             DeriveColorInTriangle(vertices, new Vector2D(j, yCurrent), colors);
                         bitmap.SetPixel(j+offset.X,yCurrent+offset.Y, col);
                     }
@@ -89,7 +91,7 @@ public class PolygonFiller
             .ForEach(i => bitmap.SetPixel(vertices[i].X+offset.X, vertices[i].Y +offset.Y, colors[i]));
     }
 
-    private Color DeriveVertexColor(Vector3D vertex, Vector3D normal, Vector3D theSun, Vector3D camera, Color objectColor)
+    private Color DeriveVertexColor(Vector3D vertex, Vector3D normal, Vector3D theSun, Vector3D camera)
     {
         var normalSun = new Vector3D(theSun.X, theSun.Y, theSun.Z) - vertex;
         normalSun.Normalize();
@@ -97,7 +99,7 @@ public class PolygonFiller
         normalCamera.Normalize();
         
         var iL = new Vector3D(1, 1, 1);
-        var iO = new Vector3D(objectColor.R/255f, objectColor.G/255f, objectColor.B/255f);
+        var iO = new Vector3D(ObjectColor.R/255f, ObjectColor.G/255f, ObjectColor.B/255f);
         var n = normal;
         var v = normalCamera;
         var l = normalSun;
@@ -141,7 +143,7 @@ public class PolygonFiller
         return Color.FromArgb((int)mean.X, (int)mean.Y, (int)mean.Z);
     }
 
-    private Color DeriveNormalAndColorInTriangle(Dictionary<Vector3D,Vector3D> verticeNormals, List<Vector3D> vertices, Vector2D point, Vector3D theSun, Vector3D camera, Color objectColor)
+    private Color DeriveNormalAndColorInTriangle(Dictionary<Vector3D,Vector3D> verticeNormals, List<Vector3D> vertices, Vector2D point, Vector3D theSun, Vector3D camera)
     {
         
         var v1 = vertices[0];
@@ -155,7 +157,7 @@ public class PolygonFiller
         var weights = new List<float>{w1, w2, w3};
         var normal = VectorMean(verticeNormals.Select(p => p.Value).ToList(), weights);
         var height = FloatMean(verticeNormals.Keys.Select(v => v.Z).ToList(), weights);
-        return DeriveVertexColor(new Vector3D(point, height), normal, theSun, camera, objectColor);
+        return DeriveVertexColor(new Vector3D(point, height), normal, theSun, camera);
     }
 
     private Vector3D VectorMean(List<Vector3D> vector, List<float> weights)

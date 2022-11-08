@@ -36,9 +36,7 @@ namespace scene_raycasting_3D
             float xLength = xMax - xMin;
             float yLength = yMax - yMin;
             float objLength = xLength > yLength ? xLength : yLength;
-            
-            
-            
+
             _polygons = _scene.Meshes.SelectMany(mesh => 
                 mesh.Faces.Select(face => 
                     new Polygon(
@@ -51,7 +49,7 @@ namespace scene_raycasting_3D
                         )
                     )
                 ).ToList();
-            
+
             Refresh();
         }
         public void Refresh()
@@ -63,12 +61,12 @@ namespace scene_raycasting_3D
                 )
             );
             ForRange(0, _polygons.Count, i =>
-                polygonFiller.Fill(_polygons[i], theSun, _camera, Bitmap, Color.White, _offset)
+                polygonFiller.Fill(_polygons[i], theSun, _camera, Bitmap, _offset)
             );
             
             float sunX = Math.Max(0, Math.Min(theSun.X + _offset.X, Bitmap.Width-1)); 
             float sunY = Math.Max(0, Math.Min(theSun.Y + _offset.Y, Bitmap.Height-1));
-            Bitmap.SetPixel(sunX, sunY, Color.Yellow);
+            Bitmap.SetPixel(sunX, sunY, Color.White);
         }
 
 
@@ -81,6 +79,17 @@ namespace scene_raycasting_3D
         {
             theSun.X += moveVector.X;
             theSun.Y += moveVector.Y;
+        }
+
+        public void LoadNormal(string fileName)
+        {
+            Bitmap bitmap = new Bitmap(fileName);
+            float bitMapLength = bitmap.Width > bitmap.Height ? bitmap.Width : bitmap.Height;
+            
+            var vertexNormalMap = _polygons.SelectMany(p => p.Vertices.Zip(p.Normals, (v, n) => new { v, n }))
+                .ToDictionary(x => x.v, x => x.n);
+
+            
         }
     }
 }

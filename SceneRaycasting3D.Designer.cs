@@ -49,6 +49,7 @@ namespace scene_raycasting_3D
             this.kdTrackBar = new System.Windows.Forms.TrackBar();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.colorPickButton = new System.Windows.Forms.Button();
+            this.normalPickButton = new System.Windows.Forms.Button();
             this.modifyNormalCheckBox = new System.Windows.Forms.CheckBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.viewPictureBox)).BeginInit();
@@ -234,10 +235,20 @@ namespace scene_raycasting_3D
             this.colorPickButton.UseVisualStyleBackColor = true;
             this.colorPickButton.Click += new System.EventHandler(this.colorPickButton_Click);
             // 
+            // normalPickButton
+            // 
+            this.normalPickButton.Location = new System.Drawing.Point(829, 453);
+            this.normalPickButton.Name = "normalPickButton";
+            this.normalPickButton.Size = new System.Drawing.Size(122, 33);
+            this.normalPickButton.TabIndex = 4;
+            this.normalPickButton.Text = "Pick Normal Map";
+            this.normalPickButton.UseVisualStyleBackColor = true;
+            this.normalPickButton.Click += new System.EventHandler(this.normalPickButton_Click);
+            // 
             // modifyNormalCheckBox
             // 
             this.modifyNormalCheckBox.AutoSize = true;
-            this.modifyNormalCheckBox.Location = new System.Drawing.Point(829, 468);
+            this.modifyNormalCheckBox.Location = new System.Drawing.Point(829, 518);
             this.modifyNormalCheckBox.Name = "modifyNormalCheckBox";
             this.modifyNormalCheckBox.Size = new System.Drawing.Size(143, 19);
             this.modifyNormalCheckBox.TabIndex = 5;
@@ -252,6 +263,7 @@ namespace scene_raycasting_3D
             this.ClientSize = new System.Drawing.Size(1066, 550);
             this.Controls.Add(this.modifyNormalCheckBox);
             this.Controls.Add(this.colorPickButton);
+            this.Controls.Add(this.normalPickButton);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.viewPictureBox);
@@ -296,6 +308,7 @@ namespace scene_raycasting_3D
         private Label label3;
         private ColorDialog colorDialog1;
         private Button colorPickButton;
+        private Button normalPickButton;
         private CheckBox modifyNormalCheckBox;
     }
 }
