@@ -50,6 +50,7 @@ namespace scene_raycasting_3D
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.colorPickButton = new System.Windows.Forms.Button();
             this.normalPickButton = new System.Windows.Forms.Button();
+            this.texturePickButton = new System.Windows.Forms.Button();
             this.modifyNormalCheckBox = new System.Windows.Forms.CheckBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.viewPictureBox)).BeginInit();
@@ -88,7 +89,7 @@ namespace scene_raycasting_3D
             // 
             // viewPictureBox
             // 
-            this.viewPictureBox.BackColor = System.Drawing.Color.Black;
+            this.viewPictureBox.BackColor = System.Drawing.Color.MintCream;
             this.viewPictureBox.Location = new System.Drawing.Point(0, 27);
             this.viewPictureBox.Name = "viewPictureBox";
             this.viewPictureBox.Size = new System.Drawing.Size(800, 512);
@@ -229,7 +230,7 @@ namespace scene_raycasting_3D
             // 
             this.colorPickButton.Location = new System.Drawing.Point(829, 413);
             this.colorPickButton.Name = "colorPickButton";
-            this.colorPickButton.Size = new System.Drawing.Size(122, 33);
+            this.colorPickButton.Size = new System.Drawing.Size(110, 33);
             this.colorPickButton.TabIndex = 4;
             this.colorPickButton.Text = "Pick Object Color";
             this.colorPickButton.UseVisualStyleBackColor = true;
@@ -239,11 +240,21 @@ namespace scene_raycasting_3D
             // 
             this.normalPickButton.Location = new System.Drawing.Point(829, 453);
             this.normalPickButton.Name = "normalPickButton";
-            this.normalPickButton.Size = new System.Drawing.Size(122, 33);
+            this.normalPickButton.Size = new System.Drawing.Size(110, 33);
             this.normalPickButton.TabIndex = 4;
             this.normalPickButton.Text = "Pick Normal Map";
             this.normalPickButton.UseVisualStyleBackColor = true;
             this.normalPickButton.Click += new System.EventHandler(this.normalPickButton_Click);
+            // 
+            // texturePickButton
+            // 
+            this.texturePickButton.Location = new System.Drawing.Point(949, 453);
+            this.texturePickButton.Name = "texturePickButton";
+            this.texturePickButton.Size = new System.Drawing.Size(110, 33);
+            this.texturePickButton.TabIndex = 4;
+            this.texturePickButton.Text = "Pick Texture Map";
+            this.texturePickButton.UseVisualStyleBackColor = true;
+            this.texturePickButton.Click += new System.EventHandler(this.texturePickButton_Click);
             // 
             // modifyNormalCheckBox
             // 
@@ -264,6 +275,7 @@ namespace scene_raycasting_3D
             this.Controls.Add(this.modifyNormalCheckBox);
             this.Controls.Add(this.colorPickButton);
             this.Controls.Add(this.normalPickButton);
+            this.Controls.Add(this.texturePickButton);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.viewPictureBox);
@@ -309,6 +321,7 @@ namespace scene_raycasting_3D
         private ColorDialog colorDialog1;
         private Button colorPickButton;
         private Button normalPickButton;
+        private Button texturePickButton;
         private CheckBox modifyNormalCheckBox;
     }
 }

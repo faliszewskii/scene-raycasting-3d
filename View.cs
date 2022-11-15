@@ -1,27 +1,43 @@
 ﻿using Assimp;
 using scene_raycasting_3D.geometry;
+using scene_raycasting_3D.utility;
 using static scene_raycasting_3D.utility.Utility;
 
 namespace scene_raycasting_3D
 {
     internal class View
     {
-        public DirectBitmap Bitmap { get; set; }
+        private DirectBitmap _bitmap;
+
+        public DirectBitmap Bitmap
+        {
+            get => _bitmap;
+            set
+            {
+                _bitmap = value;
+                BitMapLength = _bitmap.Width > _bitmap.Height ? _bitmap.Width : _bitmap.Height;
+            }
+        }
+
         public PolygonFiller polygonFiller;
+        public Utilities ut;
         private Scene _scene;
         private List<Polygon> _polygons;
         
         private Vector2D _offset;
         public Vector3D theSun;
         private Vector3D _camera;
+        private float BitMapLength { get; set; }
 
         public View()
         {
-            Bitmap = new DirectBitmap(1,1);
+            _bitmap = new DirectBitmap(1,1);
             _scene = new Scene();
             theSun = new Vector3D(0,0,1000);
             _camera = new Vector3D(0,0,1000);
             polygonFiller = new PolygonFiller();
+            ut = new Utilities();
+            BitMapLength = 0;
         }
         
         public void LoadScene(String fileName)
@@ -40,12 +56,9 @@ namespace scene_raycasting_3D
             _polygons = _scene.Meshes.SelectMany(mesh => 
                 mesh.Faces.Select(face => 
                     new Polygon(
-                        face.Indices.Select(i => new Vector3D(
-                            mesh.Vertices[i].X * Bitmap.Height / objLength,
-                            mesh.Vertices[i].Y * Bitmap.Height / objLength,
-                            mesh.Vertices[i].Z * Bitmap.Height / objLength
-                            )).ToList(),
-                        face.Indices.Select(i => mesh.Normals[i]).ToList()
+                        face.Indices.Select(i => mesh.Vertices[i] * _bitmap.Height / objLength).ToList(),
+                        face.Indices.Select(i => mesh.Normals[i]).ToList(),
+                        face.Indices.Select(i => new Vector3D(mesh.Normals[i].X, mesh.Normals[i].Y, mesh.Normals[i].Z)).ToList()
                         )
                     )
                 ).ToList();
@@ -54,19 +67,19 @@ namespace scene_raycasting_3D
         }
         public void Refresh()
         {
-            var r = new Random(123);
-            ForRange(0, Bitmap.Width,  i =>
-                ForRange(0, Bitmap.Height,  j =>
-                    Bitmap.SetPixel(i, j, Color.Black)
+            ForRange(0, _bitmap.Width,  i =>
+                ForRange(0, _bitmap.Height,  j =>
+                    _bitmap.SetPixel(i, j, Color.MintCream)
                 )
             );
             ForRange(0, _polygons.Count, i =>
-                polygonFiller.Fill(_polygons[i], theSun, _camera, Bitmap, _offset)
+                polygonFiller.Fill(_polygons[i], theSun, _camera, _bitmap, _offset)
             );
-            
-            float sunX = Math.Max(0, Math.Min(theSun.X + _offset.X, Bitmap.Width-1)); 
-            float sunY = Math.Max(0, Math.Min(theSun.Y + _offset.Y, Bitmap.Height-1));
-            Bitmap.SetPixel(sunX, sunY, Color.White);
+            //polygonFiller.Fill(_polygons[0], theSun, _camera, _bitmap, _offset);
+
+            float sunX = Math.Max(0, Math.Min(theSun.X + _offset.X, _bitmap.Width-1)); 
+            float sunY = Math.Max(0, Math.Min(theSun.Y + _offset.Y, _bitmap.Height-1));
+            _bitmap.SetPixel(sunX, sunY, Color.White);
         }
 
 
@@ -83,13 +96,24 @@ namespace scene_raycasting_3D
 
         public void LoadNormal(string fileName)
         {
-            Bitmap bitmap = new Bitmap(fileName);
-            float bitMapLength = bitmap.Width > bitmap.Height ? bitmap.Width : bitmap.Height;
+            Bitmap normalBitmap = new Bitmap(fileName);
+            //float normalBitmapLength = normalBitmap.Width > normalBitmap.Height ? normalBitmap.Width : normalBitmap.Height;
             
-            var vertexNormalMap = _polygons.SelectMany(p => p.Vertices.Zip(p.Normals, (v, n) => new { v, n }))
-                .ToDictionary(x => x.v, x => x.n);
+            _polygons.ForEach(p => p.NormalTexture = normalBitmap);
+            /*_polygons.ForEach(p =>
+                p.ModifiedNormals = p.Vertices.Zip(p.Normals, (v, nText) =>
+                {
+                    return  polygonFiller.getNormalFromBitmap(normalBitmap, v, nText);
+                }).ToList()
+                );*/
+        }
 
-            
+        
+
+        public void LoadTexture(string fileName)
+        {
+            Bitmap textureBitmap = new Bitmap(fileName);
+            _polygons.ForEach(p => p.Texture = textureBitmap);
         }
     }
 }

@@ -7,6 +7,6 @@ public static class ListExtension
         int size = list.Count;
         if (i < 0)
             return list[i + size * (-(i + 1) / size + 1)];
-        return i >= size ? list[i % size] : list[i];
+        return list[i % size];
     }
 }
