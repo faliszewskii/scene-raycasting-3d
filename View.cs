@@ -22,7 +22,7 @@ namespace scene_raycasting_3D
         public PolygonFiller polygonFiller;
         public Utilities ut;
         private Scene _scene;
-        private List<Polygon> _polygons;
+        public List<Polygon> _polygons;
         
         private Vector2D _offset;
         public Vector3D theSun;

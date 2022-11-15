@@ -1,6 +1,7 @@
 ﻿using Assimp;
 using scene_raycasting_3D.model;
 using scene_raycasting_3D.utility;
+using System.Drawing;
 using static scene_raycasting_3D.utility.Utility;
 
 namespace scene_raycasting_3D.geometry;
@@ -32,7 +33,7 @@ public class PolygonFiller
         if (polygon.Vertices.Count < 3) return;
         var vertices = polygon.Vertices;
 
-        var normals = UseModifiedNormals ? polygon.ModifiedNormals : polygon.Normals;
+        var normals = polygon.Normals;
         var vertexNormalMap = polygon.Vertices.Zip(normals, (v, n) => new { v, n })
             .ToDictionary(x => x.v, x => x.n);
 
@@ -112,7 +113,10 @@ public class PolygonFiller
                 ut.WrapI((int)vertex.Y, p.Texture.Height));
             iO = new Vector3D(col.R / 255f, col.G / 255f, col.B / 255f);
         }
-        var n = normal;
+        Vector3D n;
+        if (p.NormalTexture != null && UseModifiedNormals)
+            n = GetNormalFromBitmap(p.NormalTexture, new Vector3D(vertex.X, vertex.Y, 0), normal);
+        else n = normal;
         var v = normalCamera;
         var l = normalSun;
         float cosNl = Math.Max(0, DotProduct(n, l));
@@ -164,8 +168,6 @@ public class PolygonFiller
     {
         var weights = CalculateWeights(vertices, point);
         var normal = VectorMean(verticeNormals.Select(pair => pair.Value).ToList(), weights);
-        if (p.NormalTexture != null)
-            normal = GetNormalFromBitmap(p.NormalTexture, new Vector3D(point.X, point.Y, 0), normal);
         
         
         var height = FloatMean(verticeNormals.Keys.Select(v => v.Z).ToList(), weights);

@@ -63,7 +63,7 @@ namespace scene_raycasting_3D
             if (colorDialog1.ShowDialog() == DialogResult.OK)
             {
                 _view.polygonFiller.ObjectColor = colorDialog1.Color;
-                _view.Refresh();
+                //_view._polygons.ForEach(p => p.Texture = null);
                 viewPictureBox.Refresh();
             }
         }
