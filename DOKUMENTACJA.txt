@@ -1,0 +1,31 @@
+
+Dokumentacja do projektu z Grafiki Komputerowej 1 "Wypełnianie siatki trójkątów"
+
+Ładowanie obiektu przeprowadza się poprzez "File/Load Scene" na pasku menu . Aplikacja przyjmuje pliki z rozszerzeniem obj.
+Po otwarciu obiektu przez użytkownika może on wpłynąć na scenę w następujący sposób:
+ - Wybór interpolacji w środku trójkątów:
+	- Interpolacja koloru w punkcie z wykorzystaniem kolorów wyliczonych w wierzchołkach.
+	- Wyliczenie koloru w punkcie z wykorzystaniem wektorów normlanych zinterpolowanych z wektorów normlanych w wierzchołkach.
+ - Zmiana parametrów wyliczenia koloru:
+	- Parametr k_d.
+	- Parametr k_s.
+	- Parametr m.
+	- Wysokość źródła światła.
+ - Cztery przyciski:
+	- Wybranie koloru obiektu.
+	- Wybranie koloru światła.
+	- Załadowanie mapy normalnej do modyfikacji wektorów normalnych obiektu.
+	- Załadowanie tekstury do nałożenia na obiekt.
+ - Zaznaczenie czy wektory mają być zmodyfikowane z wykorzystaniem wczytanej mapy wektorów normalnych.
+ - Zaznaczenie czy słońce powinno być animowane.
+ - Poruszanie źródłem światła za pomocą przytrzymania prawego przycisku myszki.
+ 
+ Do programu w folderze 'resources' zostały załączone:
+  - Obiekt "sphereSmooth.obj"
+  - Obiekt "torusSmooth.obj"
+  - Mapa normalna "normalCoin.jpg"
+  - Mapa normalna "normalPillow.png"
+  - Tekstura "HermaniaNeergaard.jpg"
+  - Tekstura "JelenaFaliszewska.jpg"
+  
+  Osobiście polecam monetę ze złotym kolorem.

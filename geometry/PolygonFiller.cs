@@ -12,6 +12,7 @@ public class PolygonFiller
     public float Ks { get; set; }
     public float M { get; set; }
     public Color ObjectColor { get; set; }
+    public Color LightColor { get; set; }
 
     public bool UseNormalInterpolation { get; set; }
     public bool UseModifiedNormals { get; set; }
@@ -23,6 +24,7 @@ public class PolygonFiller
         Ks = 0.5f;
         M = 50;
         ObjectColor = Color.White;
+        LightColor = Color.White;
         UseNormalInterpolation = false;
         UseModifiedNormals = false;
         ut = new Utilities();
@@ -103,14 +105,15 @@ public class PolygonFiller
         var normalCamera = new Vector3D(camera.X, camera.Y, camera.Z);
         normalCamera.Normalize();
         
-        var iL = new Vector3D(1, 1, 1);
+        var iL = new Vector3D(LightColor.R / 255f, LightColor.G / 255f, LightColor.B / 255f);
         Vector3D iO;
         if (p.Texture == null)
             iO = new Vector3D(ObjectColor.R / 255f, ObjectColor.G / 255f, ObjectColor.B / 255f);
         else
         {
-            var col = p.Texture.GetPixel(ut.WrapI((int)vertex.X, p.Texture.Width),
-                ut.WrapI((int)vertex.Y, p.Texture.Height));
+            int xi = ut.WrapI((int)vertex.X - p.Texture.Width / 2, p.Texture.Width);
+            int yi = ut.WrapI((int)vertex.Y - p.Texture.Height / 2, p.Texture.Height);
+            var col = p.Texture.GetPixel(xi, yi);
             iO = new Vector3D(col.R / 255f, col.G / 255f, col.B / 255f);
         }
         Vector3D n;
@@ -213,8 +216,8 @@ public class PolygonFiller
     public Vector3D GetNormalFromBitmap(Bitmap normalBitmap, Vector3D v, Vector3D n)
     {
         var nTextColor = normalBitmap.GetPixel(
-            ut.WrapI((int)v.X, normalBitmap.Width),
-            ut.WrapI((int)v.Y, normalBitmap.Height));
+            ut.WrapI((int)v.X - normalBitmap.Width/2, normalBitmap.Width),
+            ut.WrapI((int)v.Y - normalBitmap.Height/2, normalBitmap.Height));
         var nText = new Vector3D(nTextColor.R / 127f - 1, nTextColor.G / 127f - 1, nTextColor.B / 255f);
         var b = (n.X == 0 && n.Y == 0 && n.Z == 1f)
             ? new Vector3D(0, 0, 1)

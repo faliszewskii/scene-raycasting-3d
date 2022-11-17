@@ -6,7 +6,7 @@ namespace scene_raycasting_3D
     // https://stackoverflow.com/questions/24701703/c-sharp-faster-alternatives-to-setpixel-and-getpixel-for-bitmaps-for-windows-f
     public class DirectBitmap : IDisposable 
     {
-        public Bitmap Bitmap { get; private set; }
+        public Bitmap Bitmap { get; set; }
         private int[] Bits { get; set; }
         private bool Disposed { get; set; }
         public int Height { get; set; }

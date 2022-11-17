@@ -30,6 +30,7 @@ namespace scene_raycasting_3D
         /// </summary>
         private void InitializeComponent(View view)
         {
+            this.components = new System.ComponentModel.Container();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadSceneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -49,9 +50,12 @@ namespace scene_raycasting_3D
             this.kdTrackBar = new System.Windows.Forms.TrackBar();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.colorPickButton = new System.Windows.Forms.Button();
+            this.lightPickButton = new System.Windows.Forms.Button();
             this.normalPickButton = new System.Windows.Forms.Button();
             this.texturePickButton = new System.Windows.Forms.Button();
             this.modifyNormalCheckBox = new System.Windows.Forms.CheckBox();
+            this.animateSunCheckBox = new System.Windows.Forms.CheckBox();
+            this.timer = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.viewPictureBox)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -61,6 +65,11 @@ namespace scene_raycasting_3D
             ((System.ComponentModel.ISupportInitialize)(this.ksTrackBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.kdTrackBar)).BeginInit();
             this.SuspendLayout();
+            //
+            // timer
+            //
+            this.timer.Tick += new System.EventHandler(this.TimerTick);
+            this.timer.Enabled = false;
             // 
             // menuStrip1
             // 
@@ -160,12 +169,12 @@ namespace scene_raycasting_3D
             // sunZTrackBar
             // 
             this.sunZTrackBar.Location = new System.Drawing.Point(48, 175);
-            this.sunZTrackBar.Maximum = 10000;
-            this.sunZTrackBar.Minimum = 10;
+            this.sunZTrackBar.Maximum = 1000;
+            this.sunZTrackBar.Minimum = 100;
             this.sunZTrackBar.Name = "sunZTrackBar";
             this.sunZTrackBar.Size = new System.Drawing.Size(134, 45);
             this.sunZTrackBar.TabIndex = 6;
-            this.sunZTrackBar.Value = 1000;
+            this.sunZTrackBar.Value = 500;
             this.sunZTrackBar.Scroll += new System.EventHandler(this.sunZTrackBar_Scroll);
             // 
             // label3
@@ -199,11 +208,11 @@ namespace scene_raycasting_3D
             // 
             this.mTrackBar.Location = new System.Drawing.Point(48, 124);
             this.mTrackBar.Maximum = 100;
+            this.mTrackBar.Minimum = 1;
             this.mTrackBar.Name = "mTrackBar";
             this.mTrackBar.Size = new System.Drawing.Size(134, 45);
             this.mTrackBar.TabIndex = 2;
             this.mTrackBar.Value = 50;
-            this.mTrackBar.Minimum = 1;
             this.mTrackBar.Scroll += new System.EventHandler(this.mTrackBar_Scroll);
             // 
             // ksTrackBar
@@ -236,6 +245,16 @@ namespace scene_raycasting_3D
             this.colorPickButton.UseVisualStyleBackColor = true;
             this.colorPickButton.Click += new System.EventHandler(this.colorPickButton_Click);
             // 
+            // lightPickButton
+            // 
+            this.lightPickButton.Location = new System.Drawing.Point(949, 413);
+            this.lightPickButton.Name = "lightPickButton";
+            this.lightPickButton.Size = new System.Drawing.Size(110, 33);
+            this.lightPickButton.TabIndex = 4;
+            this.lightPickButton.Text = "Pick Light Color";
+            this.lightPickButton.UseVisualStyleBackColor = true;
+            this.lightPickButton.Click += new System.EventHandler(this.lightPickButton_Click);
+            // 
             // normalPickButton
             // 
             this.normalPickButton.Location = new System.Drawing.Point(829, 453);
@@ -267,13 +286,26 @@ namespace scene_raycasting_3D
             this.modifyNormalCheckBox.UseVisualStyleBackColor = true;
             this.modifyNormalCheckBox.CheckedChanged += new System.EventHandler(this.modifyNormalCheckBox_CheckedChanged);
             // 
+            // animateSunCheckBox
+            // 
+            this.animateSunCheckBox.AutoSize = true;
+            this.animateSunCheckBox.Location = new System.Drawing.Point(829, 538);
+            this.animateSunCheckBox.Name = "modifyNormalCheckBox";
+            this.animateSunCheckBox.Size = new System.Drawing.Size(143, 19);
+            this.animateSunCheckBox.TabIndex = 5;
+            this.animateSunCheckBox.Text = "Animate Sun";
+            this.animateSunCheckBox.UseVisualStyleBackColor = true;
+            this.animateSunCheckBox.CheckedChanged += new System.EventHandler(this.animateSunCheckBoxCheckBox_CheckedChanged);
+            // 
             // SceneRaycasting3D
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1066, 550);
+            this.ClientSize = new System.Drawing.Size(1066, 600);
             this.Controls.Add(this.modifyNormalCheckBox);
+            this.Controls.Add(this.animateSunCheckBox);
             this.Controls.Add(this.colorPickButton);
+            this.Controls.Add(this.lightPickButton);
             this.Controls.Add(this.normalPickButton);
             this.Controls.Add(this.texturePickButton);
             this.Controls.Add(this.groupBox2);
@@ -320,8 +352,11 @@ namespace scene_raycasting_3D
         private Label label3;
         private ColorDialog colorDialog1;
         private Button colorPickButton;
+        private Button lightPickButton;
         private Button normalPickButton;
         private Button texturePickButton;
         private CheckBox modifyNormalCheckBox;
+        private CheckBox animateSunCheckBox;
+        private System.Windows.Forms.Timer timer;
     }
 }

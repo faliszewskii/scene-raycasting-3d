@@ -1,13 +1,14 @@
 using Assimp;
+using scene_raycasting_3D.geometry;
 
 namespace scene_raycasting_3D
 {
     internal partial class SceneRaycasting3D : Form
     {
         private readonly View _view;
+
         public SceneRaycasting3D()
         {
-
             _view = new View();
             InitializeComponent(_view);
             InitializeView();
@@ -63,7 +64,17 @@ namespace scene_raycasting_3D
             if (colorDialog1.ShowDialog() == DialogResult.OK)
             {
                 _view.polygonFiller.ObjectColor = colorDialog1.Color;
-                //_view._polygons.ForEach(p => p.Texture = null);
+                _view._polygons.ForEach(p => p.Texture = null);
+                _view.Refresh();
+                viewPictureBox.Refresh();
+            }
+        }
+        private void lightPickButton_Click(object sender, EventArgs e)
+        {
+            if (colorDialog1.ShowDialog() == DialogResult.OK)
+            {
+                _view.polygonFiller.LightColor = colorDialog1.Color;
+                _view.Refresh();
                 viewPictureBox.Refresh();
             }
         }
@@ -73,6 +84,7 @@ namespace scene_raycasting_3D
             {
                 _view.LoadNormal(openFileDialog.FileName);
             }
+            _view.Refresh();
             viewPictureBox.Refresh();
         }
         private void texturePickButton_Click(object sender, EventArgs e)
@@ -81,6 +93,7 @@ namespace scene_raycasting_3D
             {
                 _view.LoadTexture(openFileDialog.FileName);
             }
+            _view.Refresh();
             viewPictureBox.Refresh();
         }
 
@@ -92,9 +105,20 @@ namespace scene_raycasting_3D
             
         }
 
+        private void animateSunCheckBoxCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            timer.Enabled = (sender as CheckBox).Checked;
+        }
+
+        private void TimerTick(object sender, EventArgs e)
+        {
+            _view.AnimateSun();
+            _view.Refresh();
+            viewPictureBox.Refresh();
+        }
+
         private void colorInterpolationRB_CheckedChanged(object sender, EventArgs e)
         {
-            
         }
 
         private void normalInterpolationRB_CheckedChanged(object sender, EventArgs e)

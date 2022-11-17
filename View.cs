@@ -19,6 +19,7 @@ namespace scene_raycasting_3D
             }
         }
 
+        public SunAnimator sunAnimator;
         public PolygonFiller polygonFiller;
         public Utilities ut;
         private Scene _scene;
@@ -36,6 +37,7 @@ namespace scene_raycasting_3D
             theSun = new Vector3D(0,0,1000);
             _camera = new Vector3D(0,0,1000);
             polygonFiller = new PolygonFiller();
+            sunAnimator = new SunAnimator(new Vector2D(theSun.X, theSun.Y), 0.2, 20);
             ut = new Utilities();
             BitMapLength = 0;
         }
@@ -72,14 +74,15 @@ namespace scene_raycasting_3D
                     _bitmap.SetPixel(i, j, Color.MintCream)
                 )
             );
-            ForRange(0, _polygons.Count, i =>
-                polygonFiller.Fill(_polygons[i], theSun, _camera, _bitmap, _offset)
-            );
-            //polygonFiller.Fill(_polygons[0], theSun, _camera, _bitmap, _offset);
+            _polygons.ForEach( p =>
+            {
+                polygonFiller.Fill(p, theSun, _camera, _bitmap, _offset);
+            });
 
-            float sunX = Math.Max(0, Math.Min(theSun.X + _offset.X, _bitmap.Width-1)); 
+            float sunX = Math.Max(0, Math.Min(theSun.X + _offset.X, _bitmap.Width-2)); 
             float sunY = Math.Max(0, Math.Min(theSun.Y + _offset.Y, _bitmap.Height-1));
             _bitmap.SetPixel(sunX, sunY, Color.White);
+            _bitmap.SetPixel(sunX+1, sunY, Color.Black);
         }
 
 
@@ -92,20 +95,18 @@ namespace scene_raycasting_3D
         {
             theSun.X += moveVector.X;
             theSun.Y += moveVector.Y;
+            sunAnimator.TheMiddle = new Vector2D(theSun.X, theSun.Y);
+        }
+        public void MoveTheSunTo(Vector2D destination)
+        {
+            theSun.X = destination.X;
+            theSun.Y = destination.Y;
         }
 
         public void LoadNormal(string fileName)
         {
             Bitmap normalBitmap = new Bitmap(fileName);
-            //float normalBitmapLength = normalBitmap.Width > normalBitmap.Height ? normalBitmap.Width : normalBitmap.Height;
-            
             _polygons.ForEach(p => p.NormalTexture = normalBitmap);
-            /*_polygons.ForEach(p =>
-                p.ModifiedNormals = p.Vertices.Zip(p.Normals, (v, nText) =>
-                {
-                    return  polygonFiller.getNormalFromBitmap(normalBitmap, v, nText);
-                }).ToList()
-                );*/
         }
 
         
@@ -114,6 +115,11 @@ namespace scene_raycasting_3D
         {
             Bitmap textureBitmap = new Bitmap(fileName);
             _polygons.ForEach(p => p.Texture = textureBitmap);
+        }
+
+        public void AnimateSun()
+        {
+            MoveTheSunTo(sunAnimator.nextPosition());
         }
     }
 }
