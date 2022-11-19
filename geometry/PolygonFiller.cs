@@ -139,17 +139,7 @@ public class PolygonFiller
 
     private Color DeriveColorInTriangle(List<Vector3D> vertices, Vector2D point, List<Color> vertexColors)
     {
-        var v1 = vertices[0];
-        var v2 = vertices[1];
-        var v3 = vertices[2];
-        float w1 = ((v2.Y - v3.Y) * (point.X - v3.X) + (v3.X - v2.X) * (point.Y - v3.Y)) /
-                   ((v2.Y - v3.Y) * (v1.X - v3.X) + (v3.X - v2.X) * (v1.Y - v3.Y));
-        w1 = Math.Max(0, Math.Min(w1, 1));
-        float w2 = ((v3.Y - v1.Y) * (point.X - v3.X) + (v1.X - v3.X) * (point.Y - v3.Y)) /
-                   ((v2.Y - v3.Y) * (v1.X - v3.X) + (v3.X - v2.X) * (v1.Y - v3.Y));
-        w2 = Math.Max(0, Math.Min(w2, 1-w1));
-        float w3 = 1 - w1 - w2;
-        var weights = new List<float>{w1, w2, w3};
+        var weights = CalculateWeights(vertices, point);
         return ColorMean(vertexColors, weights);
     }
 
@@ -184,8 +174,10 @@ public class PolygonFiller
         var v3 = vertices[2];
         float w1 = ((v2.Y - v3.Y) * (point.X - v3.X) + (v3.X - v2.X) * (point.Y - v3.Y)) /
                    ((v2.Y - v3.Y) * (v1.X - v3.X) + (v3.X - v2.X) * (v1.Y - v3.Y));
+        w1 = Math.Max(0, Math.Min(w1, 1));
         float w2 = ((v3.Y - v1.Y) * (point.X - v3.X) + (v1.X - v3.X) * (point.Y - v3.Y)) /
                    ((v2.Y - v3.Y) * (v1.X - v3.X) + (v3.X - v2.X) * (v1.Y - v3.Y));
+        w2 = Math.Max(0, Math.Min(w2, 1-w1));
         float w3 = 1 - w1 - w2;
         var weights = new List<float> { w1, w2, w3 };
         return weights;
